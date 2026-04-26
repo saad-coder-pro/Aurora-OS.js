@@ -2,42 +2,13 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MonitorX } from 'lucide-react';
 
-const MIN_WIDTH = 1366;
-const MIN_HEIGHT = 700; // slightly lower than 768 to allow for browser chrome/toolbars
-
 export const ScreenGuard = ({ children }: { children: React.ReactNode }) => {
   const [isInvalid, setIsInvalid] = useState(false);
   const [reason, setReason] = useState<string>('');
 
   useEffect(() => {
-    const checkScreen = () => {
-      const { innerWidth, innerHeight } = window;
-      const isPortrait = innerHeight > innerWidth;
-
-      if (isPortrait) {
-        setIsInvalid(true);
-        setReason('PORTRAIT_MODE_DETECTED');
-        return;
-      }
-
-      if (innerWidth < MIN_WIDTH) {
-        setIsInvalid(true);
-        setReason(`RESOLUTION_WIDTH_LOW (${innerWidth} < ${MIN_WIDTH})`);
-        return;
-      }
-
-      if (innerHeight < MIN_HEIGHT) {
-        setIsInvalid(true);
-        setReason(`RESOLUTION_HEIGHT_LOW (${innerHeight} < ${MIN_HEIGHT})`);
-        return;
-      }
-
-      setIsInvalid(false);
-    };
-
-    checkScreen();
-    window.addEventListener('resize', checkScreen);
-    return () => window.removeEventListener('resize', checkScreen);
+    // Removed display resolution detection to support tablets and mobile devices
+    setIsInvalid(false);
   }, []);
 
   return (
@@ -64,14 +35,6 @@ export const ScreenGuard = ({ children }: { children: React.ReactNode }) => {
                 <p>
                   <span className="opacity-50 mr-4">ERROR_CODE:</span>
                   <span className="font-bold">{reason}</span>
-                </p>
-                <p>
-                  <span className="opacity-50 mr-4">REQUIRED:</span>
-                  <span>{MIN_WIDTH}x{MIN_HEIGHT} (LANDSCAPE)</span>
-                </p>
-                <p>
-                  <span className="opacity-50 mr-4">CURRENT:</span>
-                  <span>{window.innerWidth}x{window.innerHeight}</span>
                 </p>
               </div>
 
